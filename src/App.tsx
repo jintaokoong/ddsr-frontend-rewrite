@@ -1,44 +1,116 @@
-import { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import {
+  Box,
+  Checkbox,
+  Container,
+  Fab,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+  TextField,
+} from "@mui/material";
+import { Delete, PlayArrow, StopSharp } from "@mui/icons-material";
+import { green, grey, red } from "@mui/material/colors";
+import { useCallback, useState } from "react";
+import Providers from "./providers";
+import useRequests from "./hooks/use-requests";
 
-function App() {
-  const [count, setCount] = useState(0);
+const Main = () => {
+  const [active, setActive] = useState(false);
+  const [name, setName] = useState("");
+  const { data } = useRequests();
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <Box sx={{ p: "15px 0" }}>
+      <Box>
+        <TextField
+          onKeyUp={(e) => {
+            if (name.length > 0 && e.key === "Enter") {
+              setName("");
+            }
+          }}
+          sx={{ mb: "5px", width: "87%", mr: "5px" }}
+          onChange={(e) => setName(e.currentTarget.value)}
+          value={name}
+          placeholder={"手動點歌 (ENTER鍵新增)"}
+          size="small"
+        />
+        <IconButton
+          onClick={() => setActive((a) => !a)}
+          color={active ? "error" : "success"}
+        >
+          {active ? <StopSharp /> : <PlayArrow />}
+        </IconButton>
+      </Box>
+      {data && (
+        <List
+          sx={{
+            "& ul": { padding: 0 },
+          }}
+          subheader={<li />}
+        >
+          {Object.keys(data).map((k) => (
+            <li key={k}>
+              <ul>
+                <ListSubheader sx={{ px: 0 }}>{k}</ListSubheader>
+                {data[k]?.map((i) => (
+                  <ListItem
+                    key={i._id}
+                    sx={{ px: 0 }}
+                    secondaryAction={<Checkbox checked={i.done} />}
+                  >
+                    <ListItemButton sx={{ px: 0 }}>
+                      <ListItemText
+                        sx={{
+                          textDecorationLine: i.done
+                            ? "line-through"
+                            : undefined,
+                          color: i.done ? grey[600] : undefined,
+                        }}
+                      >
+                        {i.name}
+                      </ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </List>
+      )}
+    </Box>
+  );
+};
+
+const greenStyle = {
+  bgcolor: green[500],
+  "&:hover": {
+    bgcolor: green[600],
+  },
+};
+
+const redStyle = {
+  bgcolor: red[500],
+  "&:hover": {
+    bgcolor: red[600],
+  },
+};
+
+function App() {
+  return (
+    <Providers>
+      <Container
+        sx={{
+          minHeight: "100vh",
+          position: "relative",
+        }}
+        maxWidth={"xs"}
+      >
+        <Main />
+      </Container>
+    </Providers>
   );
 }
 
