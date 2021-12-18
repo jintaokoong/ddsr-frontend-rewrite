@@ -2,6 +2,7 @@ import { UpdatePayload } from "../interfaces/update-payload";
 import axios from "../config/axios";
 import { GetRequestsResponse } from "../interfaces/get-requests-response";
 import { GetConfigResponse } from "../interfaces/get-config-response";
+import { AxiosResponse } from "axios";
 
 const getRequests = () =>
   axios.get<GetRequestsResponse>("/request").then((res) => res.data);
@@ -16,7 +17,9 @@ const getConfig = () =>
   axios.get<GetConfigResponse>("/config").then(({ data }) => data);
 
 const toggleAccepting = () =>
-  axios.post("/config/toggle").then(({ data }) => data);
+  axios
+    .post<undefined, AxiosResponse<GetConfigResponse>>("/config/toggle")
+    .then(({ data }) => data);
 
 export default {
   getConfig,
