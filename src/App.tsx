@@ -24,6 +24,7 @@ import useRequests from "./hooks/use-requests";
 import Providers from "./providers";
 import { GetRequestsResponse } from "./interfaces/get-requests-response";
 import { GetConfigResponse } from "./interfaces/get-config-response";
+import { Request } from "./interfaces/request";
 
 const Main = () => {
   const [name, setName] = useState("");
@@ -34,9 +35,9 @@ const Main = () => {
   const { data: config } = useConfig();
 
   const onCheck = useCallback(
-    (_id: string, done: boolean) => () => {
+    (key: string, sr: Request) => () => {
       requestMutate(
-        { _id, done: !done },
+        { _id: sr._id, done: !sr.done, key: key },
         {
           onSuccess: () => {
             qc.setQueryData<GetRequestsResponse>("requests", (data) => ({
@@ -85,10 +86,7 @@ const Main = () => {
                   secondaryAction={<IconButton children={<Delete />} />}
                   disablePadding
                 >
-                  <ListItemButton
-                    sx={{ px: 0 }}
-                    onClick={onCheck(i._id, i.done)}
-                  >
+                  <ListItemButton sx={{ px: 0 }} onClick={onCheck(k, i)}>
                     <ListItemIcon>
                       <Checkbox checked={i.done} />
                     </ListItemIcon>
