@@ -21,8 +21,22 @@ const useCreateRequestMutation = () => {
         )}-${pad(date.getDate())}`;
         const generated = uuidv4();
         const updater = (pv: GetRequestsResponse | undefined) => {
-          if (pv === undefined || pv[dateString] === undefined) {
+          if (pv === undefined) {
             return undefined;
+          }
+          if (pv[dateString] === undefined) {
+            return {
+              [dateString]: [
+                {
+                  _id: generated,
+                  name: name,
+                  done: false,
+                  createdAt: date.getTime(),
+                  updatedAt: date.getTime(),
+                },
+              ],
+              ...pv,
+            };
           }
           return {
             ...pv,
@@ -47,9 +61,9 @@ const useCreateRequestMutation = () => {
           key: dateString,
         };
       },
-      onSuccess: (data: any, _, context) => {
+      onSuccess: async (data: any, _, context) => {
         if (!context) {
-          queryClient.invalidateQueries(["requests"]);
+          await queryClient.invalidateQueries(["requests"]);
           return;
         }
         queryClient.setQueryData<GetRequestsResponse | undefined>(
