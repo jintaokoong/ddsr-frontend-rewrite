@@ -47,7 +47,7 @@ const Main = () => {
     <Box sx={{ p: "15px 0" }}>
       <Box sx={{ px: "14px" }}>
         <TextField
-          disabled={!config ? true : config.accepting === "true"}
+          disabled={!config ? true : config.accepting === "false"}
           onKeyUp={(e) => {
             if (name.length > 0 && e.key === "Enter") {
               setName("");
