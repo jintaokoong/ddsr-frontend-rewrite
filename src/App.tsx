@@ -1,8 +1,8 @@
 import { Delete, PlayArrow, StopSharp } from "@mui/icons-material";
 import {
   Box,
-  CircularProgress,
   Checkbox,
+  CircularProgress,
   Container,
   Fab,
   IconButton,
@@ -12,8 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  SxProps,
   TextField,
-  Paper,
+  Theme,
 } from "@mui/material";
 import { green, grey, red } from "@mui/material/colors";
 import { Fragment, useCallback, useEffect, useState } from "react";
@@ -23,10 +24,9 @@ import useConfigMutation from "./hooks/use-config-mutation";
 import useCreateConfigMutation from "./hooks/use-create-config-mutation";
 import useRequestMutation from "./hooks/use-request-mutation";
 import useRequests from "./hooks/use-requests";
-import Providers from "./providers";
 import { GetRequestsResponse } from "./interfaces/get-requests-response";
-import { GetConfigResponse } from "./interfaces/get-config-response";
 import { Request } from "./interfaces/request";
+import Providers from "./providers";
 
 const Main = () => {
   const [name, setName] = useState("");
@@ -38,18 +38,9 @@ const Main = () => {
 
   const onCheck = useCallback(
     (key: string, sr: Request) => () => {
-      requestMutate(
-        { _id: sr._id, done: !sr.done, key: key },
-        {
-          onSuccess: () => {
-            qc.setQueryData<GetRequestsResponse>("requests", (data) => ({
-              ...data,
-            }));
-          },
-        }
-      );
+      requestMutate({ _id: sr._id, done: !sr.done, key: key });
     },
-    []
+    [requestMutate]
   );
 
   return (
@@ -138,27 +129,33 @@ const greenStyle = {
   },
 };
 
+const fabStyle: SxProps<Theme> = {
+  zIndex: 999,
+  position: "sticky",
+  bottom: "20px",
+  float: "right",
+  marginRight: "20px",
+  color: "common.white",
+};
+
 const AcceptingFab = () => {
   const [active, setActive] = useState(false);
-  const { data: config } = useConfig();
+  const { data: config, isLoading } = useConfig();
   const { mutate: configMutate } = useConfigMutation();
   const onClick = useCallback(() => {
     configMutate(undefined);
   }, [configMutate]);
   useEffect(() => {
     setActive(config?.accepting === "true");
-  }, [config?.accepting]);
+  }, [config?.accepting, setActive]);
 
-  return (
+  return isLoading ? (
+    <Fab sx={fabStyle} />
+  ) : (
     <Fab
       onClick={onClick}
       sx={{
-        zIndex: 999,
-        position: "sticky",
-        bottom: "20px",
-        float: "right",
-        marginRight: "20px",
-        color: "common.white",
+        ...fabStyle,
         ...(active ? greenStyle : redStyle),
       }}
       children={active ? <PlayArrow /> : <StopSharp />}
