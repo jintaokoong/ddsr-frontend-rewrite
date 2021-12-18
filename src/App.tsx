@@ -1,6 +1,7 @@
 import { Delete, PlayArrow, StopSharp } from "@mui/icons-material";
 import {
   Box,
+  CircularProgress,
   Checkbox,
   Container,
   Fab,
@@ -12,6 +13,7 @@ import {
   ListItemText,
   ListSubheader,
   TextField,
+  Paper,
 } from "@mui/material";
 import { green, grey, red } from "@mui/material/colors";
 import { Fragment, useCallback, useEffect, useState } from "react";
@@ -29,7 +31,7 @@ import { Request } from "./interfaces/request";
 const Main = () => {
   const [name, setName] = useState("");
   const qc = useQueryClient();
-  const { data: requests } = useRequests();
+  const { data: requests, isLoading } = useRequests();
   const { mutate: createRequestMutate } = useCreateConfigMutation();
   const { mutate: requestMutate } = useRequestMutation();
   const { data: config } = useConfig();
@@ -75,6 +77,17 @@ const Main = () => {
           size="small"
         />
       </Box>
+      {isLoading && (
+        <Box
+          sx={{
+            height: "calc(100vh - 150px)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          children={<CircularProgress />}
+        />
+      )}
       {requests && (
         <List subheader={<li />}>
           {Object.keys(requests).map((k) => (
@@ -83,7 +96,9 @@ const Main = () => {
               {requests[k]?.map((i) => (
                 <ListItem
                   key={i._id}
-                  secondaryAction={<IconButton children={<Delete />} />}
+                  secondaryAction={
+                    <IconButton color={"error"} children={<Delete />} />
+                  }
                   disablePadding
                 >
                   <ListItemButton sx={{ px: 0 }} onClick={onCheck(k, i)}>

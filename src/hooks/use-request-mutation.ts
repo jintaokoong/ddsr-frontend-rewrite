@@ -6,7 +6,12 @@ import { Request } from "../interfaces/request";
 
 const useRequestMutation = () => {
   const queryClient = useQueryClient();
-  return useMutation(
+  return useMutation<
+    Promise<any>,
+    any,
+    UpdatePayload,
+    { pvrqs: GetRequestsResponse | undefined }
+  >(
     ["request"],
     (payload: UpdatePayload) => apiService.updateRequest(payload),
     {
@@ -15,13 +20,26 @@ const useRequestMutation = () => {
         const pvrqs = queryClient.getQueryData<GetRequestsResponse>([
           "requests",
         ]);
-        queryClient.setQueryData<GetRequestsResponse>(["requests"], (pv) => ({
-          ...pv,
-          [variables.key]:
-            pv === undefined || pv[variables.key] === undefined
-              ? []
-              : (pv[variables.key] as Request[]).map((r) => r),
-        }));
+        const updater = (pv: GetRequestsResponse | undefined) => {
+          if (pv === undefined || pv[variables.key] === undefined) {
+            return undefined;
+          }
+          return {
+            ...pv,
+            [variables.key]: pv[variables.key].map((r) =>
+              r._id === variables._id ? { ...r, done: !r.done } : r
+            ),
+          };
+        };
+        queryClient.setQueryData<GetRequestsResponse | undefined>(
+          ["requests"],
+          updater
+        );
+        return { pvrqs };
+      },
+      onError: (err, _, context) => {
+        console.error(err);
+        queryClient.setQueryData("requests", () => context?.pvrqs);
       },
     }
   );
