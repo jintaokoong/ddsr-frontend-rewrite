@@ -21,7 +21,7 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import useConfig from "./hooks/use-config";
 import useConfigMutation from "./hooks/use-config-mutation";
-import useCreateConfigMutation from "./hooks/use-create-config-mutation";
+import useCreateRequestMutation from "./hooks/use-create-config-mutation";
 import useRequestMutation from "./hooks/use-request-mutation";
 import useRequests from "./hooks/use-requests";
 import { GetRequestsResponse } from "./interfaces/get-requests-response";
@@ -32,7 +32,7 @@ const Main = () => {
   const [name, setName] = useState("");
   const qc = useQueryClient();
   const { data: requests, isLoading } = useRequests();
-  const { mutate: createRequestMutate } = useCreateConfigMutation();
+  const { mutate: createRequestMutate } = useCreateRequestMutation();
   const { mutate: requestMutate } = useRequestMutation();
   const { data: config } = useConfig();
 
@@ -47,17 +47,11 @@ const Main = () => {
     <Box sx={{ p: "15px 0" }}>
       <Box sx={{ px: "14px" }}>
         <TextField
-          disabled={!config?.accepting}
+          disabled={!config ? true : config.accepting === "true"}
           onKeyUp={(e) => {
             if (name.length > 0 && e.key === "Enter") {
-              createRequestMutate(name, {
-                onSuccess: () => {
-                  qc.refetchQueries(["requests"]);
-                },
-                onSettled: () => {
-                  setName("");
-                },
-              });
+              setName("");
+              createRequestMutate(name);
             }
           }}
           fullWidth
@@ -88,7 +82,11 @@ const Main = () => {
                 <ListItem
                   key={i._id}
                   secondaryAction={
-                    <IconButton color={"error"} children={<Delete />} />
+                    <IconButton
+                      disabled
+                      color={"error"}
+                      children={<Delete />}
+                    />
                   }
                   disablePadding
                 >
@@ -156,9 +154,9 @@ const AcceptingFab = () => {
       onClick={onClick}
       sx={{
         ...fabStyle,
-        ...(active ? greenStyle : redStyle),
+        ...(!active ? greenStyle : redStyle),
       }}
-      children={active ? <PlayArrow /> : <StopSharp />}
+      children={!active ? <PlayArrow /> : <StopSharp />}
     />
   );
 };
