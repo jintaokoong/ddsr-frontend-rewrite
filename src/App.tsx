@@ -1,4 +1,9 @@
-import { Delete, PlayArrow, StopSharp } from "@mui/icons-material";
+import {
+  Delete,
+  InfoOutlined,
+  PlayArrow,
+  StopSharp,
+} from "@mui/icons-material";
 import {
   Box,
   Checkbox,
@@ -22,18 +27,23 @@ import { useQueryClient } from "react-query";
 import useConfig from "./hooks/use-config";
 import useConfigMutation from "./hooks/use-config-mutation";
 import useCreateRequestMutation from "./hooks/use-create-config-mutation";
+import useDeleteRequestMutation from "./hooks/use-delete-request-mutation";
 import useRequestMutation from "./hooks/use-request-mutation";
 import useRequests from "./hooks/use-requests";
-import { GetRequestsResponse } from "./interfaces/get-requests-response";
+import { DeletePayload } from "./interfaces/delete-payload";
 import { Request } from "./interfaces/request";
 import Providers from "./providers";
 
 const Main = () => {
   const [name, setName] = useState("");
+  const [deletePayload, setDeletePayload] = useState<DeletePayload | undefined>(
+    undefined
+  );
   const qc = useQueryClient();
   const { data: requests, isLoading } = useRequests();
   const { mutate: createRequestMutate } = useCreateRequestMutation();
   const { mutate: requestMutate } = useRequestMutation();
+  const { mutate: deleteRequestMutate } = useDeleteRequestMutation();
   const { data: config } = useConfig();
 
   const onCheck = useCallback(
@@ -42,6 +52,14 @@ const Main = () => {
     },
     [requestMutate]
   );
+
+  const onConfirm = useCallback(() => {
+    if (!deletePayload) {
+      return;
+    }
+    setDeletePayload(undefined);
+    deleteRequestMutate(deletePayload);
+  }, [deletePayload]);
 
   return (
     <Box sx={{ p: "15px 0" }}>
@@ -82,11 +100,18 @@ const Main = () => {
                 <ListItem
                   key={i._id}
                   secondaryAction={
-                    <IconButton
-                      disabled
-                      color={"error"}
-                      children={<Delete />}
-                    />
+                    deletePayload === undefined ||
+                    deletePayload.request._id !== i._id ? (
+                      <IconButton
+                        onClick={() => setDeletePayload({ key: k, request: i })}
+                        color={"error"}
+                        children={<Delete />}
+                      />
+                    ) : (
+                      <IconButton color={"warning"} onClick={onConfirm}>
+                        <InfoOutlined />
+                      </IconButton>
+                    )
                   }
                   disablePadding
                 >
