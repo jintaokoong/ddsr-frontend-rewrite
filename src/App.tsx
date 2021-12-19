@@ -20,6 +20,7 @@ import {
   SxProps,
   TextField,
   Theme,
+  Tooltip,
 } from "@mui/material";
 import { green, grey, red } from "@mui/material/colors";
 import { Fragment, useCallback, useEffect, useState } from "react";
@@ -102,15 +103,21 @@ const Main = () => {
                   secondaryAction={
                     deletePayload === undefined ||
                     deletePayload.request._id !== i._id ? (
-                      <IconButton
-                        onClick={() => setDeletePayload({ key: k, request: i })}
-                        color={"error"}
-                        children={<Delete />}
-                      />
+                      <Tooltip title={"刪除"}>
+                        <IconButton
+                          onClick={() =>
+                            setDeletePayload({ key: k, request: i })
+                          }
+                          color={"error"}
+                          children={<Delete />}
+                        />
+                      </Tooltip>
                     ) : (
-                      <IconButton color={"warning"} onClick={onConfirm}>
-                        <InfoOutlined />
-                      </IconButton>
+                      <Tooltip title={"確認刪除"}>
+                        <IconButton color={"warning"} onClick={onConfirm}>
+                          <InfoOutlined />
+                        </IconButton>
+                      </Tooltip>
                     )
                   }
                   disablePadding
@@ -175,14 +182,16 @@ const AcceptingFab = () => {
   return isLoading ? (
     <Fab sx={fabStyle} />
   ) : (
-    <Fab
-      onClick={onClick}
-      sx={{
-        ...fabStyle,
-        ...(!active ? greenStyle : redStyle),
-      }}
-      children={!active ? <PlayArrow /> : <StopSharp />}
-    />
+    <Tooltip title={!active ? "開始接受" : "停止接受"}>
+      <Fab
+        onClick={onClick}
+        sx={{
+          ...fabStyle,
+          ...(!active ? greenStyle : redStyle),
+        }}
+        children={!active ? <PlayArrow /> : <StopSharp />}
+      />
+    </Tooltip>
   );
 };
 
