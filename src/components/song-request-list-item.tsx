@@ -1,5 +1,5 @@
 import { Request } from "../interfaces/request";
-import { Fragment, PropsWithChildren, useCallback, useState } from "react";
+import { Fragment, memo, PropsWithChildren } from "react";
 import {
   Checkbox,
   ListItem,
@@ -10,9 +10,8 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import DeleteButton from "./delete-button";
-import useDeleteRequestMutation from "../hooks/use-delete-request-mutation";
-import { DeletePayload } from "../interfaces/delete-payload";
-import useRequestMutation from "../hooks/use-request-mutation";
+import useDeleteRequest from "../hooks/ui/use-delete-request";
+import useToggleRequest from "../hooks/ui/use-toggle-request";
 
 interface Props {
   requests: Request[];
@@ -63,51 +62,16 @@ const SongRequestSubListItem = ({
   );
 };
 
-const useDeleteRequest = () => {
-  const [deletePayload, setDeletePayload] = useState<DeletePayload | undefined>(
-    undefined
-  );
-  const { mutate: deleteMutate } = useDeleteRequestMutation();
-
-  const onPreConfirm = useCallback(
-    (key: string, request: Request) => () =>
-      setDeletePayload({ key: key, request: request }),
-    [setDeletePayload]
-  );
-
-  const onConfirm = useCallback(() => {
-    if (!deletePayload) {
-      return;
-    }
-    setDeletePayload(undefined);
-    deleteMutate(deletePayload);
-  }, [deletePayload]);
-
-  return {
-    target: deletePayload,
-    onPreConfirm,
-    onConfirm,
-  };
-};
-
-const useOnToggleRequest = () => {
-  const { mutate: requestMutate } = useRequestMutation();
-  return useCallback(
-    (key: string, request: Request) => () => {
-      requestMutate({ _id: request._id, done: !request.done, key: key });
-    },
-    []
-  );
-};
+export const MemoizedSongRequestSubListItem = memo(SongRequestSubListItem);
 
 const SongRequestListItem = ({ date, requests }: Props) => {
   const { onConfirm, onPreConfirm, target } = useDeleteRequest();
-  const onToggle = useOnToggleRequest();
+  const onToggle = useToggleRequest();
   return (
     <Fragment>
       <ListSubheader>{date}</ListSubheader>
       {requests.map((r) => (
-        <SongRequestSubListItem
+        <MemoizedSongRequestSubListItem
           key={r._id}
           request={r}
           deleteProps={{
