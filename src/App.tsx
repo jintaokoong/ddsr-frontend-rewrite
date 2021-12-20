@@ -5,6 +5,7 @@ import AcceptingFab from "./components/accepting-fab";
 import CreateRequestInput from "./components/create-request-input";
 import Loader from "./components/loader";
 import SongRequestListItem from "./components/song-request-list-item";
+import { useEffect } from "react";
 
 const Main = () => {
   const { data: requests, isLoading } = useRequests();
@@ -24,6 +25,9 @@ const Main = () => {
 };
 
 function App() {
+  useEffect(() => {
+    console.log(`v${import.meta.env.VITE_VERSION}`);
+  }, []);
   return (
     <Providers>
       <Container

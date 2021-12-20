@@ -62,8 +62,6 @@ const SongRequestSubListItem = ({
   );
 };
 
-export const MemoizedSongRequestSubListItem = memo(SongRequestSubListItem);
-
 const SongRequestListItem = ({ date, requests }: Props) => {
   const { onConfirm, onPreConfirm, target } = useDeleteRequest();
   const onToggle = useToggleRequest();
@@ -71,7 +69,7 @@ const SongRequestListItem = ({ date, requests }: Props) => {
     <Fragment>
       <ListSubheader>{date}</ListSubheader>
       {requests.map((r) => (
-        <MemoizedSongRequestSubListItem
+        <SongRequestSubListItem
           key={r._id}
           request={r}
           deleteProps={{
@@ -88,4 +86,4 @@ const SongRequestListItem = ({ date, requests }: Props) => {
   );
 };
 
-export default SongRequestListItem;
+export default memo(SongRequestListItem);
