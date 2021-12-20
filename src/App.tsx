@@ -6,6 +6,7 @@ import CreateRequestInput from "./components/create-request-input";
 import Loader from "./components/loader";
 import SongRequestListItem from "./components/song-request-list-item";
 import { useEffect } from "react";
+import { VERSION } from "./config/configs";
 
 const Main = () => {
   const { data: requests, isLoading } = useRequests();
@@ -26,7 +27,7 @@ const Main = () => {
 
 function App() {
   useEffect(() => {
-    console.log(`v${import.meta.env.VITE_VERSION}`);
+    console.log(`v${VERSION}`);
   }, []);
   return (
     <Providers>
