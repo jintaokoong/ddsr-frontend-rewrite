@@ -1,5 +1,5 @@
 import { Request } from "../interfaces/request";
-import { Fragment, memo, PropsWithChildren } from "react";
+import { Fragment, memo, PropsWithChildren, SyntheticEvent } from "react";
 import {
   Checkbox,
   ListItem,
@@ -7,11 +7,14 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import DeleteButton from "./delete-button";
 import useDeleteRequest from "../hooks/ui/use-delete-request";
 import useToggleRequest from "../hooks/ui/use-toggle-request";
+import copy from "copy-to-clipboard";
+import useStore from "../store/store";
 
 interface Props {
   requests: Request[];
@@ -27,24 +30,30 @@ const SongRequestTitle = ({
   done,
   children,
 }: PropsWithChildren<{ done: boolean }>) => (
-  <ListItemText sx={done ? songRequestDoneStyle : undefined}>
-    {children}
-  </ListItemText>
+  <ListItemText
+    sx={done ? songRequestDoneStyle : undefined}
+    primary={children}
+    secondary={"description"}
+  />
 );
 
 const SongRequestSubListItem = ({
   request,
   deleteProps,
+  onCopy,
+  onDismiss,
   toggleProps: { onToggle },
 }: {
   request: Request;
+  onCopy: () => void;
+  onDismiss: () => void;
   deleteProps: {
     isPending: boolean;
     onPreConfirm: () => void;
     onConfirm: () => void;
   };
   toggleProps: {
-    onToggle: () => void;
+    onToggle: (e: SyntheticEvent) => void;
   };
 }) => {
   return (
@@ -52,12 +61,26 @@ const SongRequestSubListItem = ({
       disablePadding
       secondaryAction={<DeleteButton {...deleteProps} />}
     >
-      <ListItemButton sx={{ px: 0 }} onClick={onToggle}>
-        <ListItemIcon>
-          <Checkbox checked={request.done} />
-        </ListItemIcon>
-        <SongRequestTitle done={request.done}>{request.name}</SongRequestTitle>
-      </ListItemButton>
+      <Tooltip title={"點擊複製YT連結"}>
+        <ListItemButton
+          sx={{ px: 0 }}
+          onClick={() => {
+            copy(request.name);
+            onCopy();
+            const timeoutRef = setTimeout(() => {
+              onDismiss();
+              clearTimeout(timeoutRef);
+            }, 1000);
+          }}
+        >
+          <ListItemIcon>
+            <Checkbox checked={request.done} onClick={onToggle} />
+          </ListItemIcon>
+          <SongRequestTitle done={request.done}>
+            {request.name}
+          </SongRequestTitle>
+        </ListItemButton>
+      </Tooltip>
     </ListItem>
   );
 };
@@ -65,6 +88,10 @@ const SongRequestSubListItem = ({
 const SongRequestListItem = ({ date, requests }: Props) => {
   const { onConfirm, onPreConfirm, target } = useDeleteRequest();
   const onToggle = useToggleRequest();
+  const { show, hide } = useStore((state) => ({
+    show: state.show,
+    hide: state.hide,
+  }));
   return (
     <Fragment>
       <ListSubheader>{date}</ListSubheader>
@@ -72,6 +99,8 @@ const SongRequestListItem = ({ date, requests }: Props) => {
         <SongRequestSubListItem
           key={r._id}
           request={r}
+          onCopy={show}
+          onDismiss={hide}
           deleteProps={{
             isPending: target === undefined || target.request._id !== r._id,
             onPreConfirm: onPreConfirm(date, r),

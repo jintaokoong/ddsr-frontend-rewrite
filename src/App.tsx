@@ -1,5 +1,12 @@
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Box, Container, List } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Container,
+  IconButton,
+  List,
+  Snackbar,
+} from "@mui/material";
 import { useEffect } from "react";
 import AcceptingFab from "./components/accepting-fab";
 import Conditional from "./components/conditional";
@@ -9,9 +16,16 @@ import SongRequestListItem from "./components/song-request-list-item";
 import { VERSION } from "./config/configs";
 import useRequests from "./hooks/use-requests";
 import Providers from "./providers";
+import CloseIcon from "@mui/icons-material/Close";
+import useStore from "./store/store";
 
 const Main = () => {
   const { data: requests, isLoading } = useRequests();
+  const { showing, hide } = useStore((state) => ({
+    showing: state.showing,
+    hide: state.hide,
+  }));
+
   return (
     <Box sx={{ p: "15px 0" }}>
       <CreateRequestInput />
@@ -44,6 +58,23 @@ const Main = () => {
           </Conditional>
         )}
       </Conditional>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{ bottom: { xs: 90 } }}
+        open={showing}
+        children={
+          <Alert
+            action={
+              <IconButton color={"success"} onClick={hide}>
+                <CloseIcon color={"success"} />
+              </IconButton>
+            }
+            severity={"success"}
+            sx={{ width: "360px" }}
+            children={"複製成功!"}
+          />
+        }
+      />
     </Box>
   );
 };
