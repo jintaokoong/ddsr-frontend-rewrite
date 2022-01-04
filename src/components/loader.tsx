@@ -1,11 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 
-interface Props {
-  isLoading: boolean;
-}
-
-export const Loader = ({ isLoading }: Props) => {
-  return isLoading ? (
+export const Loader = () => {
+  return (
     <Box
       sx={{
         height: "calc(100vh - 150px)",
@@ -15,7 +11,7 @@ export const Loader = ({ isLoading }: Props) => {
       }}
       children={<CircularProgress />}
     />
-  ) : null;
+  );
 };
 
 export default Loader;
