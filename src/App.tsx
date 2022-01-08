@@ -28,12 +28,6 @@ const Main = () => {
   }));
   useWebSocket();
 
-  useEffect(() => {
-    if (requests) {
-      console.log(Object.keys(requests).flatMap((k) => requests[k].length));
-    }
-  }, [requests]);
-
   return (
     <Box sx={{ p: "15px 0" }}>
       <CreateRequestInput />
@@ -72,11 +66,6 @@ const Main = () => {
         open={showing}
         children={
           <Alert
-            action={
-              <IconButton color={"success"} onClick={hide}>
-                <CloseIcon color={"success"} />
-              </IconButton>
-            }
             severity={"success"}
             sx={{ width: "360px" }}
             children={"複製成功!"}

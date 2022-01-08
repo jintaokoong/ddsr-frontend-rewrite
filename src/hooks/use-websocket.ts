@@ -77,7 +77,7 @@ const onOpen =
     heartbeat(ws, timeoutRef);
   };
 
-const wsUrl = "ws://localhost:4000";
+const wsUrl = (import.meta.env.VITE_WS_URL as string | undefined) ?? "";
 
 const useWebSocket = () => {
   const wsRef = useRef<CWebSocket | null>(null);
