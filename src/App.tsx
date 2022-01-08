@@ -18,6 +18,7 @@ import useRequests from "./hooks/use-requests";
 import Providers from "./providers";
 import CloseIcon from "@mui/icons-material/Close";
 import useStore from "./store/store";
+import useWebSocket from "./hooks/use-websocket";
 
 const Main = () => {
   const { data: requests, isLoading } = useRequests();
@@ -25,6 +26,13 @@ const Main = () => {
     showing: state.showing,
     hide: state.hide,
   }));
+  useWebSocket();
+
+  useEffect(() => {
+    if (requests) {
+      console.log(Object.keys(requests).flatMap((k) => requests[k].length));
+    }
+  }, [requests]);
 
   return (
     <Box sx={{ p: "15px 0" }}>

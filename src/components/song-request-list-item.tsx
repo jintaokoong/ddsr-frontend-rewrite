@@ -28,12 +28,13 @@ const songRequestDoneStyle = {
 
 const SongRequestTitle = ({
   done,
+  secondary,
   children,
-}: PropsWithChildren<{ done: boolean }>) => (
+}: PropsWithChildren<{ done: boolean; secondary: string | undefined }>) => (
   <ListItemText
     sx={done ? songRequestDoneStyle : undefined}
     primary={children}
-    secondary={"description"}
+    secondary={secondary}
   />
 );
 
@@ -65,7 +66,7 @@ const SongRequestSubListItem = ({
         <ListItemButton
           sx={{ px: 0 }}
           onClick={() => {
-            copy(request.name);
+            copy(request.details?.url ?? "");
             onCopy();
             const timeoutRef = setTimeout(() => {
               onDismiss();
@@ -76,7 +77,10 @@ const SongRequestSubListItem = ({
           <ListItemIcon>
             <Checkbox checked={request.done} onClick={onToggle} />
           </ListItemIcon>
-          <SongRequestTitle done={request.done}>
+          <SongRequestTitle
+            done={request.done}
+            secondary={request.details?.title}
+          >
             {request.name}
           </SongRequestTitle>
         </ListItemButton>
