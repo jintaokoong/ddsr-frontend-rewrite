@@ -1,5 +1,11 @@
 import { Request } from "../interfaces/request";
-import { Fragment, SyntheticEvent, useCallback } from "react";
+import {
+  Fragment,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import {
   Checkbox,
   IconButton,
@@ -18,20 +24,16 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import copy from "copy-to-clipboard";
 import { SongRequestTitle } from "./song-request-title";
+import { sleep } from "../utils";
 
 interface Props {
   request: Request;
   onCopy: () => void;
-  onDismiss: () => void;
   deleteProps: {
     isPending: boolean;
     onPreConfirm: () => void;
     onConfirm: () => void;
-  };
-  moreProps: {
-    isOpen: boolean;
-    anchorEl: HTMLButtonElement | undefined;
-    setAnchorEl: (anchor: HTMLButtonElement | undefined) => void;
+    resetDelete: () => void;
   };
   toggleProps: {
     onToggle: (e: SyntheticEvent) => void;
@@ -41,42 +43,30 @@ interface Props {
 export const SongRequestSubListItem = ({
   request,
   deleteProps,
-  moreProps,
   onCopy,
-  onDismiss,
   toggleProps: { onToggle },
 }: Props) => {
-  const menuItemOnClick = useCallback(
-    (item: "link" | "copy" | "delete", confirm?: boolean) => () => {
-      if (!confirm) {
-        moreProps.setAnchorEl(undefined);
-      }
-      console.log(request);
-      switch (item) {
-        case "link":
-          request.details?.url && window.open(request.details.url);
-          break;
-        case "copy":
-          if (request.details?.url) {
-            copy(request.details.url);
-            onCopy();
-            const timeoutRef = setTimeout(() => {
-              onDismiss();
-              clearTimeout(timeoutRef);
-            }, 1000);
-          }
-          break;
-        case "delete":
-          if (confirm) {
-            deleteProps.onPreConfirm();
-          } else {
-            deleteProps.onConfirm();
-          }
-          break;
-        default:
-      }
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | undefined>();
+  const popoverOpen = useMemo(() => anchorEl !== undefined, [anchorEl]);
+
+  const onMenuItemClick = useCallback(
+    (callback?: () => void) => () => {
+      setAnchorEl(undefined);
+      callback && callback();
     },
-    [moreProps, deleteProps, request, onCopy, onDismiss]
+    []
+  );
+
+  const onDeleteClick = useCallback(
+    (confirm: boolean) => () => {
+      if (confirm) {
+        deleteProps.onPreConfirm();
+        return;
+      }
+      deleteProps.onConfirm();
+      setAnchorEl(undefined);
+    },
+    [deleteProps]
   );
 
   return (
@@ -85,20 +75,24 @@ export const SongRequestSubListItem = ({
       secondaryAction={
         <Fragment>
           <Tooltip title={"更多"}>
-            <IconButton onClick={(e) => moreProps.setAnchorEl(e.currentTarget)}>
+            <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
               <MoreVertIcon />
             </IconButton>
           </Tooltip>
           <Menu
-            onClose={() => {
-              moreProps.setAnchorEl(undefined);
+            onClose={async () => {
+              setAnchorEl(undefined);
+              if (!deleteProps.isPending) {
+                await sleep(500);
+                deleteProps.resetDelete();
+              }
             }}
-            open={moreProps.isOpen}
+            open={popoverOpen}
             transformOrigin={{
               vertical: "top",
               horizontal: "right",
             }}
-            anchorEl={moreProps.anchorEl}
+            anchorEl={anchorEl}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",
@@ -106,26 +100,30 @@ export const SongRequestSubListItem = ({
           >
             <MenuItem
               disabled={request.details?.url === undefined}
-              onClick={menuItemOnClick("link")}
+              onClick={onMenuItemClick(() => {
+                request.details?.url && window.open(request.details.url);
+              })}
             >
               <ListItemIcon>
                 <OpenInNewIcon fontSize={"small"} />
               </ListItemIcon>
               <ListItemText>打開鏈接</ListItemText>
             </MenuItem>
-            <MenuItem>{request.name}</MenuItem>
             <MenuItem
               disabled={request.details?.url === undefined}
-              onClick={menuItemOnClick("copy")}
+              onClick={onMenuItemClick(() => {
+                if (request.details?.url) {
+                  copy(request.details.url);
+                  onCopy();
+                }
+              })}
             >
               <ListItemIcon>
                 <ContentCopyIcon fontSize={"small"} />
               </ListItemIcon>
               <ListItemText>複製鏈接</ListItemText>
             </MenuItem>
-            <MenuItem
-              onClick={menuItemOnClick("delete", deleteProps.isPending)}
-            >
+            <MenuItem onClick={onDeleteClick(deleteProps.isPending)}>
               <ListItemIcon>
                 {deleteProps.isPending ? (
                   <DeleteIcon fontSize={"small"} />

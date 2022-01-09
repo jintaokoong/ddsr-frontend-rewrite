@@ -23,10 +23,15 @@ const useDeleteRequest = () => {
     deleteMutate(deletePayload);
   }, [deletePayload]);
 
+  const resetDelete = useCallback(() => {
+    setDeletePayload(undefined);
+  }, []);
+
   return {
     target: deletePayload,
     onPreConfirm,
     onConfirm,
+    resetDelete,
   };
 };
 export default useDeleteRequest;

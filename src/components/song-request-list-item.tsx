@@ -1,10 +1,11 @@
 import { Request } from "../interfaces/request";
-import { Fragment, memo, useMemo, useState } from "react";
+import { Fragment, memo } from "react";
 import { ListSubheader } from "@mui/material";
 import useDeleteRequest from "../hooks/ui/use-delete-request";
 import useToggleRequest from "../hooks/ui/use-toggle-request";
 import useStore from "../store/store";
 import { SongRequestSubListItem } from "./song-request-sub-list-item";
+import { sleep } from "../utils";
 
 interface Props {
   requests: Request[];
@@ -12,11 +13,8 @@ interface Props {
 }
 
 const SongRequestListItem = ({ date, requests }: Props) => {
-  const { onConfirm, onPreConfirm, target } = useDeleteRequest();
+  const { onConfirm, onPreConfirm, resetDelete, target } = useDeleteRequest();
   const onToggle = useToggleRequest();
-
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | undefined>();
-  const popoverOpen = useMemo(() => anchorEl !== undefined, [anchorEl]);
 
   const { show, hide } = useStore((state) => ({
     show: state.show,
@@ -30,17 +28,16 @@ const SongRequestListItem = ({ date, requests }: Props) => {
         <SongRequestSubListItem
           key={r._id}
           request={r}
-          onCopy={show}
-          onDismiss={hide}
-          moreProps={{
-            isOpen: popoverOpen,
-            anchorEl: anchorEl,
-            setAnchorEl: setAnchorEl,
+          onCopy={async () => {
+            show();
+            await sleep(1000);
+            hide();
           }}
           deleteProps={{
             isPending: target === undefined || target.request._id !== r._id,
             onPreConfirm: onPreConfirm(date, r),
             onConfirm: onConfirm,
+            resetDelete: resetDelete,
           }}
           toggleProps={{
             onToggle: onToggle(date, r),

@@ -1,12 +1,5 @@
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import {
-  Alert,
-  Box,
-  Container,
-  IconButton,
-  List,
-  Snackbar,
-} from "@mui/material";
+import { Alert, Box, Container, List, Snackbar } from "@mui/material";
 import { useEffect } from "react";
 import AcceptingFab from "./components/accepting-fab";
 import Conditional from "./components/conditional";
@@ -21,9 +14,8 @@ import useWebSocket from "./hooks/use-websocket";
 
 const Main = () => {
   const { data: requests, isLoading } = useRequests();
-  const { showing, hide } = useStore((state) => ({
+  const { showing } = useStore((state) => ({
     showing: state.showing,
-    hide: state.hide,
   }));
   useWebSocket();
 
