@@ -6,7 +6,6 @@ const useToggleRequest = () => {
   const { mutate: requestMutate } = useRequestMutation();
   return useCallback(
     (key: string, request: Request) => (e: SyntheticEvent) => {
-      e.stopPropagation();
       requestMutate({ _id: request._id, done: !request.done, key: key });
     },
     []

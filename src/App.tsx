@@ -16,7 +16,6 @@ import SongRequestListItem from "./components/song-request-list-item";
 import { VERSION } from "./config/configs";
 import useRequests from "./hooks/use-requests";
 import Providers from "./providers";
-import CloseIcon from "@mui/icons-material/Close";
 import useStore from "./store/store";
 import useWebSocket from "./hooks/use-websocket";
 
