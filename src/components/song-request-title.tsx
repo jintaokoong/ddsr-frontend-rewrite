@@ -1,11 +1,11 @@
-import { PropsWithChildren } from 'react'
-import { ListItemText } from '@mui/material'
-import { grey } from '@mui/material/colors'
+import { ListItemText } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { memo, PropsWithChildren } from "react";
 
 const songRequestDoneStyle = {
-  textDecorationLine: 'line-through',
+  textDecorationLine: "line-through",
   color: grey[600],
-}
+};
 export const SongRequestTitle = ({
   done,
   children,
@@ -14,4 +14,6 @@ export const SongRequestTitle = ({
     sx={done ? songRequestDoneStyle : undefined}
     primary={children}
   />
-)
+);
+
+export default memo(SongRequestTitle);

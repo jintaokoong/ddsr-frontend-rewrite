@@ -1,11 +1,8 @@
-import { Request } from "../interfaces/request";
-import {
-  Fragment,
-  SyntheticEvent,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   Checkbox,
   IconButton,
@@ -17,14 +14,18 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import copy from "copy-to-clipboard";
-import { SongRequestTitle } from "./song-request-title";
+import {
+  Fragment,
+  memo,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+import { Request } from "../interfaces/request";
 import { sleep } from "../utils";
+import SongRequestTitle from "./song-request-title";
 
 interface Props {
   request: Request;
@@ -40,7 +41,7 @@ interface Props {
   };
 }
 
-export const SongRequestSubListItem = ({
+const SongRequestSubListItem = ({
   request,
   deleteProps,
   onCopy,
@@ -153,3 +154,5 @@ export const SongRequestSubListItem = ({
     </ListItem>
   );
 };
+
+export default memo(SongRequestSubListItem);
