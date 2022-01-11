@@ -5,6 +5,7 @@ specifiers:
   '@emotion/styled': ^11.6.0
   '@mui/icons-material': ^5.2.4
   '@mui/material': ^5.2.4
+  '@mui/system': ^5.2.8
   '@types/node': ^17.0.0
   '@types/react': ^17.0.33
   '@types/react-dom': ^17.0.10
@@ -27,6 +28,7 @@ dependencies:
   '@emotion/styled': 11.6.0_f08cba2053577b4854d3e19df4a0b904
   '@mui/icons-material': 5.2.4_5ed4320ee0977ed00ecf6292e8ab906e
   '@mui/material': 5.2.4_fa2645acd9a035406d0184711710de51
+  '@mui/system': 5.2.8_ef966af889ffc4849e7222692314a033
   axios: 0.24.0
   copy-to-clipboard: 3.3.1
   react: 17.0.2
@@ -495,7 +497,7 @@ packages:
       '@emotion/react': 11.7.1_cfedea9b3ed0faf0dded75c187406c5e
       '@emotion/styled': 11.6.0_f08cba2053577b4854d3e19df4a0b904
       '@mui/base': 5.0.0-alpha.60_5539cae010396b202b015f3568914e95
-      '@mui/system': 5.2.4_ef966af889ffc4849e7222692314a033
+      '@mui/system': 5.2.8_ef966af889ffc4849e7222692314a033
       '@mui/types': 7.1.0_@types+react@17.0.37
       '@mui/utils': 5.2.3_react@17.0.2
       '@types/react': 17.0.37
@@ -527,8 +529,8 @@ packages:
       react: 17.0.2
     dev: false
 
-  /@mui/styled-engine/5.2.4_922a85da57e3646a57465b7970b0de85:
-    resolution: {integrity: sha512-tlilkVsAR+MeWIPILzj1uGjiy5tKONZgblXY49LECUNF7u7aTDszqmv0hRG+1IAZjNts+ox8XAlldPNfj+OKvA==}
+  /@mui/styled-engine/5.2.6_922a85da57e3646a57465b7970b0de85:
+    resolution: {integrity: sha512-bqAhli8eGS6v2qxivy2/4K0Ag8o//jsu1G2G6QcieFiT6y7oIF/nd/6Tvw6OSm3roOTifVQWNKwkt1yFWhGS+w==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@emotion/react': ^11.4.1
@@ -548,8 +550,8 @@ packages:
       react: 17.0.2
     dev: false
 
-  /@mui/system/5.2.4_ef966af889ffc4849e7222692314a033:
-    resolution: {integrity: sha512-08WrDLzmY0/ag5wSzT0Qf2DkuPHdqkWbDUOIVs0VIkaq8tRH+EtnnLxuqyf8WLcytJZIcKcoLQDLWqbFivZ9lA==}
+  /@mui/system/5.2.8_ef966af889ffc4849e7222692314a033:
+    resolution: {integrity: sha512-tje1HRubQUk+cDJBG5F83X1j0XzVe+qhellKxByrJVOEEDHoSpbc8UW+NCLSuBBHvOikxihuv3SS4VOWOo2/BQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@emotion/react': ^11.5.0
@@ -568,7 +570,7 @@ packages:
       '@emotion/react': 11.7.1_cfedea9b3ed0faf0dded75c187406c5e
       '@emotion/styled': 11.6.0_f08cba2053577b4854d3e19df4a0b904
       '@mui/private-theming': 5.2.3_cfedea9b3ed0faf0dded75c187406c5e
-      '@mui/styled-engine': 5.2.4_922a85da57e3646a57465b7970b0de85
+      '@mui/styled-engine': 5.2.6_922a85da57e3646a57465b7970b0de85
       '@mui/types': 7.1.0_@types+react@17.0.37
       '@mui/utils': 5.2.3_react@17.0.2
       '@types/react': 17.0.37

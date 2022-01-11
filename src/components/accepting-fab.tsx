@@ -3,6 +3,7 @@ import StopSharp from "@mui/icons-material/StopSharp";
 import { green, red } from "@mui/material/colors";
 import Fab from "@mui/material/Fab";
 import Tooltip from "@mui/material/Tooltip";
+import { SxProps, Theme } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import useConfig from "../hooks/use-config";
 import useConfigMutation from "../hooks/use-config-mutation";
@@ -24,31 +25,22 @@ const AcceptingFab = () => {
     <Tooltip title={!active ? "開始接受" : "停止接受"}>
       <Fab
         onClick={onClick}
-        sx={{
-          ...fabStyle,
-          ...(!active ? greenStyle : redStyle),
-        }}
+        sx={createFabStyle(active)}
         children={!active ? <PlayArrow /> : <StopSharp />}
       />
     </Tooltip>
   );
 };
 
-const redStyle = {
-  bgcolor: red[500],
+const createFabStyle = (isActive: boolean): SxProps<Theme> => ({
+  ...fabStyle,
+  bgcolor: !isActive ? green[500] : red[500],
   "&:hover": {
-    bgcolor: red[600],
+    bgcolor: !isActive ? green[600] : red[600],
   },
-};
+});
 
-const greenStyle = {
-  bgcolor: green[500],
-  "&:hover": {
-    bgcolor: green[600],
-  },
-};
-
-const fabStyle: any = {
+const fabStyle: SxProps<Theme> = {
   zIndex: 999,
   position: "sticky",
   bottom: "20px",
