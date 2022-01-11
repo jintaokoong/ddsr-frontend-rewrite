@@ -1,15 +1,18 @@
 import create from "zustand";
+import { sleep } from "../utils";
 
-interface State {
+export interface AppState {
   showing: boolean;
   show: () => void;
-  hide: () => void;
 }
 
-const useStore = create<State>((set, get) => ({
+const useStore = create<AppState>((set, get) => ({
   showing: false,
-  show: () => set((state) => ({ showing: true })),
-  hide: () => set((state) => set({ showing: false })),
+  show: async () => {
+    set({ showing: true });
+    await sleep(1000);
+    set({ showing: false });
+  },
 }));
 
 export default useStore;

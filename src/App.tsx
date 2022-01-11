@@ -8,15 +8,33 @@ import Loader from "./components/loader";
 import SongRequestListItem from "./components/song-request-list-item";
 import { VERSION } from "./config/configs";
 import useRequests from "./hooks/use-requests";
+import useWebSocket from "./hooks/use-websocket";
 import Providers from "./providers";
 import useStore from "./store/store";
-import useWebSocket from "./hooks/use-websocket";
 
-const Main = () => {
-  const { data: requests, isLoading } = useRequests();
+const MySnackbar = () => {
   const { showing } = useStore((state) => ({
     showing: state.showing,
   }));
+
+  return (
+    <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      sx={{ bottom: { xs: 90 } }}
+      open={showing}
+      children={
+        <Alert
+          severity={"success"}
+          sx={{ width: "360px" }}
+          children={"複製成功!"}
+        />
+      }
+    />
+  );
+};
+
+const Main = () => {
+  const { data: requests, isLoading } = useRequests();
   useWebSocket();
 
   return (
@@ -51,18 +69,7 @@ const Main = () => {
           </Conditional>
         )}
       </Conditional>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        sx={{ bottom: { xs: 90 } }}
-        open={showing}
-        children={
-          <Alert
-            severity={"success"}
-            sx={{ width: "360px" }}
-            children={"複製成功!"}
-          />
-        }
-      />
+      <MySnackbar />
     </Box>
   );
 };

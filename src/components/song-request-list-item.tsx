@@ -1,10 +1,8 @@
 import { ListSubheader } from "@mui/material";
-import { Fragment, memo, useCallback } from "react";
+import { Fragment, memo } from "react";
 import useDeleteRequest from "../hooks/ui/use-delete-request";
 import useToggleRequest from "../hooks/ui/use-toggle-request";
 import { Request } from "../interfaces/request";
-import useStore from "../store/store";
-import { sleep } from "../utils";
 import SongRequestSubListItem from "./song-request-sub-list-item";
 interface Props {
   requests: Request[];
@@ -15,16 +13,6 @@ const SongRequestListItem = ({ date, requests }: Props) => {
   const { onConfirm, onPreConfirm, resetDelete, target } = useDeleteRequest();
   const onToggle = useToggleRequest();
 
-  const { show, hide } = useStore((state) => ({
-    show: state.show,
-    hide: state.hide,
-  }));
-  const onCopy = useCallback(async () => {
-    show();
-    await sleep(1000);
-    hide();
-  }, [show, hide]);
-
   return (
     <Fragment>
       <ListSubheader>{date}</ListSubheader>
@@ -32,7 +20,6 @@ const SongRequestListItem = ({ date, requests }: Props) => {
         <SongRequestSubListItem
           key={r._id}
           request={r}
-          onCopy={onCopy}
           deleteProps={{
             isPending: target === undefined || target.request._id !== r._id,
             onPreConfirm: onPreConfirm(date, r),

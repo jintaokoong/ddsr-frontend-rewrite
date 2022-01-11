@@ -24,12 +24,12 @@ import {
   useState,
 } from "react";
 import { Request } from "../interfaces/request";
+import useStore from "../store/store";
 import { sleep } from "../utils";
 import SongRequestTitle from "./song-request-title";
 
 interface Props {
   request: Request;
-  onCopy: () => void;
   deleteProps: {
     isPending: boolean;
     onPreConfirm: () => void;
@@ -44,11 +44,12 @@ interface Props {
 const SongRequestSubListItem = ({
   request,
   deleteProps,
-  onCopy,
   toggleProps: { onToggle },
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | undefined>();
   const popoverOpen = useMemo(() => anchorEl !== undefined, [anchorEl]);
+
+  const show = useStore((state) => state.show);
 
   const onMenuItemClick = useCallback(
     (callback?: () => void) => () => {
@@ -115,7 +116,7 @@ const SongRequestSubListItem = ({
               onClick={onMenuItemClick(() => {
                 if (request.details?.url) {
                   copy(request.details.url);
-                  onCopy();
+                  show();
                 }
               })}
             >
