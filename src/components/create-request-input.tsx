@@ -1,6 +1,7 @@
-import { Box, TextField } from "@mui/material";
-import useConfig from "../hooks/use-config";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import useConfig from "../hooks/use-config";
 import useCreateRequestMutation from "../hooks/use-create-config-mutation";
 
 const CreateRequestInput = () => {

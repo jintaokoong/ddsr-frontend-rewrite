@@ -1,9 +1,11 @@
+import PlayArrow from "@mui/icons-material/PlayArrow";
+import StopSharp from "@mui/icons-material/StopSharp";
+import { green, red } from "@mui/material/colors";
+import Fab from "@mui/material/Fab";
+import Tooltip from "@mui/material/Tooltip";
 import { useCallback, useEffect, useState } from "react";
 import useConfig from "../hooks/use-config";
 import useConfigMutation from "../hooks/use-config-mutation";
-import { Fab, SxProps, Theme, Tooltip } from "@mui/material";
-import { PlayArrow, StopSharp } from "@mui/icons-material";
-import { green, red } from "@mui/material/colors";
 
 const AcceptingFab = () => {
   const [active, setActive] = useState(false);
@@ -46,7 +48,7 @@ const greenStyle = {
   },
 };
 
-const fabStyle: SxProps<Theme> = {
+const fabStyle: any = {
   zIndex: 999,
   position: "sticky",
   bottom: "20px",

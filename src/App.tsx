@@ -1,5 +1,9 @@
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Alert, Box, Container, List, Snackbar } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import List from "@mui/material/List";
+import Snackbar from "@mui/material/Snackbar";
 import { useEffect } from "react";
 import AcceptingFab from "./components/accepting-fab";
 import Conditional from "./components/conditional";

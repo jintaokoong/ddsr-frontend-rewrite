@@ -1,4 +1,4 @@
-import { ListSubheader } from "@mui/material";
+import ListSubheader from "@mui/material/ListSubheader";
 import { Fragment, memo } from "react";
 import useDeleteRequest from "../hooks/ui/use-delete-request";
 import useToggleRequest from "../hooks/ui/use-toggle-request";

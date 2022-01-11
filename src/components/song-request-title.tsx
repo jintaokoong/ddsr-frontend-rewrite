@@ -1,5 +1,5 @@
-import { ListItemText } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import ListItemText from "@mui/material/ListItemText";
 import { memo, PropsWithChildren } from "react";
 
 const songRequestDoneStyle = {
