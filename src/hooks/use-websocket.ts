@@ -45,6 +45,20 @@ const onMessage =
         ws.send(payload);
         heartbeat(ws, timeoutRef);
         break;
+      case "insert": {
+        const { payload } = contents;
+        qc.setQueryData<GetRequestsResponse | undefined>(["requests"], (pv) => {
+          if (pv === undefined) {
+            return undefined;
+          }
+          const hasEntry = pv[payload.key] !== undefined;
+          return {
+            ...pv,
+            [payload.key]: hasEntry ? [...pv[payload.key], payload] : [payload],
+          };
+        });
+        break;
+      }
       case "update":
         const { payload: pl } = contents;
         console.log(pl);
