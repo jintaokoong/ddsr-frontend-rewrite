@@ -1,5 +1,7 @@
-import { IconButton, Tooltip } from "@mui/material";
-import { Delete, InfoOutlined } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 interface Props {
   isPending: boolean;

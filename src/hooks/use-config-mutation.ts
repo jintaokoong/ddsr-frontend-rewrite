@@ -12,8 +12,8 @@ const useConfigMutation = () => {
       const pvc = queryClient.getQueryData<GetConfigResponse>("config");
       // Optimistically update to the new value
       queryClient.setQueryData<GetConfigResponse>("config", (pv) => ({
-        ...pv,
-        accepting: pv?.accepting === "true" ? "false" : "true",
+        name: pv?.name ?? "",
+        value: !pv?.value,
       }));
       // Return a context object with the snapshotted value
       return { pvc };

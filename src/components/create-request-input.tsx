@@ -1,7 +1,8 @@
-import { Box, TextField } from "@mui/material";
-import useConfig from "../hooks/use-config";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import useCreateRequestMutation from "../hooks/use-create-config-mutation";
+import useConfig from "../hooks/use-config";
+import useCreateRequestMutation from "../hooks/use-create-request-mutation";
 
 const CreateRequestInput = () => {
   const [name, setName] = useState("");
@@ -11,7 +12,7 @@ const CreateRequestInput = () => {
   return (
     <Box sx={{ px: "14px" }}>
       <TextField
-        disabled={!config ? true : config.accepting === "false"}
+        disabled={!config?.value}
         onKeyUp={(e) => {
           if (name.length > 0 && e.key === "Enter") {
             setName("");

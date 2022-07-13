@@ -1,7 +1,9 @@
 export interface Request {
   _id: string;
+  audience: string;
   name: string;
   done: boolean;
-  createdAt: number;
-  updatedAt: number;
+  key: string;
+  createdAt: string;
+  updatedAt: string;
 }

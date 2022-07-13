@@ -1,34 +1,43 @@
-import { UpdatePayload } from "../interfaces/update-payload";
-import axios from "../config/axios";
-import { Request } from "../interfaces/request";
-import { GetRequestsResponse } from "../interfaces/get-requests-response";
-import { GetConfigResponse } from "../interfaces/get-config-response";
 import { AxiosResponse } from "axios";
+import axios from "../config/axios";
+import { GetConfigResponse } from "../interfaces/get-config-response";
+import { ListingOptions } from "../interfaces/listing-options";
+import { ListingResponse } from "../interfaces/listing-response";
+import { Request } from "../interfaces/request";
+import { UpdatePayload } from "../interfaces/update-payload";
 
-const getRequests = () =>
-  axios.get<GetRequestsResponse>("/request").then((res) => res.data);
+const getRequests = (options: ListingOptions) =>
+  axios
+    .get<ListingResponse<Request>>("/requests", {
+      params: { page: options.page, pageSize: 10 },
+    })
+    .then((res) => res.data);
+
+const toggleRequest = (id: string) =>
+  axios.patch(`/requests/${id}`).then(({ data }) => data);
 
 const updateRequest = (payload: UpdatePayload) =>
-  axios.put(`/request/${payload._id}`, payload).then((res) => res.data);
+  axios.put(`/requests/${payload._id}`, payload).then((res) => res.data);
 
 const createRequest = (name: string) =>
-  axios.post("/request", { name: name }).then(({ data }) => data);
+  axios.post("/requests", { name: name }).then(({ data }) => data);
 
-const deleteRequest = (request: Request) =>
-  axios.delete(`/request/${request._id}`).then(({ data }) => data);
+const deleteRequest = (id: string) =>
+  axios.delete(`/requests/${id}`).then(({ data }) => data);
 
 const getConfig = () =>
-  axios.get<GetConfigResponse>("/config").then(({ data }) => data);
+  axios.get<GetConfigResponse>("/status").then(({ data }) => data);
 
 const toggleAccepting = () =>
   axios
-    .post<undefined, AxiosResponse<GetConfigResponse>>("/config/toggle")
+    .patch<undefined, AxiosResponse<GetConfigResponse>>("/status")
     .then(({ data }) => data);
 
 export default {
   getConfig,
-  getRequests,
+  getRequests: getRequests,
   updateRequest,
+  toggleRequest,
   createRequest,
   toggleAccepting,
   deleteRequest,
