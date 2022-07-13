@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import List from "@mui/material/List";
 import Snackbar from "@mui/material/Snackbar";
 import * as R from "ramda";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AcceptingFab from "./components/accepting-fab";
 import Conditional from "./components/conditional";
 import CreateRequestInput from "./components/create-request-input";
@@ -16,6 +16,12 @@ import useRequests from "./hooks/use-requests";
 import Providers from "./providers";
 import useStore from "./store/store";
 import { Request } from "./interfaces/request";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 
 const MySnackbar = () => {
   const { showing } = useStore((state) => ({
@@ -90,6 +96,14 @@ const Main = () => {
     };
   }, [handleScroll]);
 
+  const [inputKey, setInputKey] = useState("");
+  const [key, setKey] = useState<string>();
+
+  useEffect(() => {
+    const k = localStorage.getItem("api-key");
+    setKey(k && k.length > 0 ? k : undefined);
+  }, []);
+
   return (
     <Box sx={{ p: "15px 0" }}>
       <CreateRequestInput />
@@ -127,6 +141,29 @@ const Main = () => {
         )}
       </Conditional>
       <MySnackbar />
+      <Dialog open={key === undefined || key.length === 0}>
+        <DialogTitle>密碼</DialogTitle>
+        <DialogContent sx={{ minWidth: "24vw" }}>
+          <TextField
+            value={inputKey}
+            onChange={(e) => setInputKey(e.currentTarget.value)}
+            fullWidth
+            size={"small"}
+            variant={"standard"}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={inputKey.length === 0}
+            onClick={() => {
+              localStorage.setItem("api-key", inputKey);
+              window.location.reload();
+            }}
+          >
+            確認
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
