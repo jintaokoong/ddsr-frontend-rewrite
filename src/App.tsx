@@ -4,7 +4,8 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import List from "@mui/material/List";
 import Snackbar from "@mui/material/Snackbar";
-import { useEffect } from "react";
+import * as R from "ramda";
+import { useEffect, useMemo } from "react";
 import AcceptingFab from "./components/accepting-fab";
 import Conditional from "./components/conditional";
 import CreateRequestInput from "./components/create-request-input";
@@ -12,9 +13,9 @@ import Loader from "./components/loader";
 import SongRequestListItem from "./components/song-request-list-item";
 import { VERSION } from "./config/configs";
 import useRequests from "./hooks/use-requests";
-import useWebSocket from "./hooks/use-websocket";
 import Providers from "./providers";
 import useStore from "./store/store";
+import { Request } from "./interfaces/request";
 
 const MySnackbar = () => {
   const { showing } = useStore((state) => ({
@@ -37,17 +38,65 @@ const MySnackbar = () => {
   );
 };
 
+const compareDesc = (a: Request, b: Request) =>
+  new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+
 const Main = () => {
-  const { data: requests, isLoading } = useRequests();
-  useWebSocket();
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useRequests();
+
+  const l = useMemo(() => {
+    if (!data) return [];
+
+    const datas = R.sort(
+      compareDesc,
+      R.flatten(R.map((p) => p.data, data.pages))
+    );
+    const g = R.groupBy((r) => r.key, datas);
+    const p = R.sort(
+      (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+      R.keys(g)
+    );
+    return p.map((k) => ({ key: k, data: g[k] }));
+  }, [data]);
+
+  const handleScroll = () => {
+    const canFetch = !isFetchingNextPage && hasNextPage;
+    const bottom =
+      Math.ceil(window.innerHeight + window.scrollY) >=
+      document.documentElement.scrollHeight;
+    if (bottom && canFetch) {
+      fetchNextPage();
+    }
+  };
+
+  useEffect(() => {
+    if (
+      document.body.clientHeight <= window.innerHeight &&
+      !isLoading &&
+      !isFetchingNextPage &&
+      hasNextPage
+    ) {
+      fetchNextPage();
+    }
+  }, [data, isLoading, isFetchingNextPage, hasNextPage]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <Box sx={{ p: "15px 0" }}>
       <CreateRequestInput />
       <Conditional visible={!isLoading} alternate={<Loader />}>
-        {requests && (
+        {l && (
           <Conditional
-            visible={Object.keys(requests).length > 0}
+            visible={l.length > 0}
             alternate={
               <Box
                 sx={{
@@ -66,8 +115,12 @@ const Main = () => {
             }
           >
             <List subheader={<li />} sx={{ minHeight: "calc(100vh - 139px)" }}>
-              {Object.keys(requests).map((k) => (
-                <SongRequestListItem date={k} requests={requests[k]} key={k} />
+              {l.map((r) => (
+                <SongRequestListItem
+                  date={r.key}
+                  requests={r.data}
+                  key={r.key}
+                />
               ))}
             </List>
           </Conditional>

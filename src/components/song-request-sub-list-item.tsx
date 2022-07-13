@@ -35,7 +35,7 @@ interface Props {
     resetDelete: () => void;
   };
   toggleProps: {
-    onToggle: (e: SyntheticEvent) => void;
+    onToggle: (id: string) => void;
   };
 }
 
@@ -99,21 +99,9 @@ const SongRequestSubListItem = ({
             }}
           >
             <MenuItem
-              disabled={request.details?.url === undefined}
               onClick={onMenuItemClick(() => {
-                request.details?.url && window.open(request.details.url);
-              })}
-            >
-              <ListItemIcon>
-                <OpenInNewIcon fontSize={"small"} />
-              </ListItemIcon>
-              <ListItemText>打開鏈接</ListItemText>
-            </MenuItem>
-            <MenuItem
-              disabled={request.details?.url === undefined}
-              onClick={onMenuItemClick(() => {
-                if (request.details?.url) {
-                  copy(request.details.url);
+                if (request.name) {
+                  copy(request.name);
                   show();
                 }
               })}
@@ -121,7 +109,7 @@ const SongRequestSubListItem = ({
               <ListItemIcon>
                 <ContentCopyIcon fontSize={"small"} />
               </ListItemIcon>
-              <ListItemText>複製鏈接</ListItemText>
+              <ListItemText>複製歌曲</ListItemText>
             </MenuItem>
             <MenuItem onClick={onDeleteClick(deleteProps.isPending)}>
               <ListItemIcon>
@@ -139,14 +127,11 @@ const SongRequestSubListItem = ({
         </Fragment>
       }
     >
-      <ListItemButton sx={{ px: 0 }} onClick={onToggle}>
+      <ListItemButton sx={{ px: 0 }} onClick={() => onToggle(request._id)}>
         <ListItemIcon>
           <Checkbox checked={request.done} />
         </ListItemIcon>
-        <SongRequestTitle
-          done={request.done}
-          secondary={request.details?.title}
-        >
+        <SongRequestTitle done={request.done} secondary={request.audience}>
           {request.name}
         </SongRequestTitle>
       </ListItemButton>

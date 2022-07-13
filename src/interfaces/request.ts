@@ -1,12 +1,9 @@
 export interface Request {
   _id: string;
+  audience: string;
   name: string;
   done: boolean;
-  details?: {
-    title: string;
-    url: string;
-  };
   key: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }

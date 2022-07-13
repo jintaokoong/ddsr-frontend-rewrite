@@ -8,11 +8,13 @@ const songRequestDoneStyle = {
 };
 export const SongRequestTitle = ({
   done,
+  secondary,
   children,
 }: PropsWithChildren<{ done: boolean; secondary: string | undefined }>) => (
   <ListItemText
     sx={done ? songRequestDoneStyle : undefined}
     primary={children}
+    secondary={secondary}
   />
 );
 

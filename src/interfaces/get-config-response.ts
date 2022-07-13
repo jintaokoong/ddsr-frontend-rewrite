@@ -1,3 +1,4 @@
 export interface GetConfigResponse {
-  accepting: "false" | "true";
+  name: string;
+  value: boolean;
 }

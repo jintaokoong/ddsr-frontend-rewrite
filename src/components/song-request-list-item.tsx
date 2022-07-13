@@ -1,7 +1,7 @@
 import ListSubheader from "@mui/material/ListSubheader";
 import { Fragment, memo } from "react";
 import useDeleteRequest from "../hooks/ui/use-delete-request";
-import useToggleRequest from "../hooks/ui/use-toggle-request";
+import useToggleRequest from "../hooks/use-toggle-request";
 import { Request } from "../interfaces/request";
 import SongRequestSubListItem from "./song-request-sub-list-item";
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 const SongRequestListItem = ({ date, requests }: Props) => {
   const { onConfirm, onPreConfirm, resetDelete, target } = useDeleteRequest();
-  const onToggle = useToggleRequest();
+  const { mutate } = useToggleRequest();
 
   return (
     <Fragment>
@@ -21,13 +21,13 @@ const SongRequestListItem = ({ date, requests }: Props) => {
           key={r._id}
           request={r}
           deleteProps={{
-            isPending: target === undefined || target.request._id !== r._id,
-            onPreConfirm: onPreConfirm(date, r),
+            isPending: target === undefined || target._id !== r._id,
+            onPreConfirm: onPreConfirm(r),
             onConfirm: onConfirm,
             resetDelete: resetDelete,
           }}
           toggleProps={{
-            onToggle: onToggle(date, r),
+            onToggle: mutate,
           }}
         />
       ))}

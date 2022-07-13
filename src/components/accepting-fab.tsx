@@ -9,24 +9,19 @@ import useConfig from "../hooks/use-config";
 import useConfigMutation from "../hooks/use-config-mutation";
 
 const AcceptingFab = () => {
-  const [active, setActive] = useState(false);
   const { data: config, isLoading } = useConfig();
   const { mutate: configMutate } = useConfigMutation();
   const onClick = useCallback(() => {
     configMutate(undefined);
   }, [configMutate]);
-  useEffect(() => {
-    setActive(config?.accepting === "true");
-  }, [config?.accepting, setActive]);
-
   return isLoading ? (
     <Fab sx={fabStyle} />
   ) : (
-    <Tooltip title={!active ? "開始接受" : "停止接受"}>
+    <Tooltip title={!config?.value ? "開始接受" : "停止接受"}>
       <Fab
         onClick={onClick}
-        sx={createFabStyle(active)}
-        children={!active ? <PlayArrow /> : <StopSharp />}
+        sx={createFabStyle(config?.value ?? false)}
+        children={!config?.value ? <PlayArrow /> : <StopSharp />}
       />
     </Tooltip>
   );
