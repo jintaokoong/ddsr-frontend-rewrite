@@ -145,6 +145,7 @@ const Main = () => {
         <DialogTitle>密碼</DialogTitle>
         <DialogContent sx={{ minWidth: "24vw" }}>
           <TextField
+            type={"password"}
             value={inputKey}
             onChange={(e) => setInputKey(e.currentTarget.value)}
             fullWidth
