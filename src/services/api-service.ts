@@ -9,7 +9,7 @@ import { UpdatePayload } from "../interfaces/update-payload";
 const getRequests = (options: ListingOptions) =>
   axios
     .get<ListingResponse<Request>>("/requests", {
-      params: { page: options.page, pageSize: 10 },
+      params: { page: options.page, pageSize: 100 },
     })
     .then((res) => res.data);
 

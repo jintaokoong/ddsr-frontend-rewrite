@@ -24,6 +24,18 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import useSubscribeScroll from "./hooks/ui/use-subscribe-scroll";
 
+// filter array of request by createdAt property and return past week
+const getPastWeek = (requests: Request[]) =>
+  R.filter(
+    R.propSatisfies(
+      (createdAt: string) =>
+        new Date(createdAt).getTime() >
+        new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
+      "createdAt"
+    ),
+    requests
+  );
+
 const MySnackbar = () => {
   const { showing } = useStore((state) => ({
     showing: state.showing,
@@ -59,7 +71,7 @@ const Main = () => {
       compareDesc,
       R.flatten(R.map((p) => p.data, data.pages))
     );
-    const g = R.groupBy((r) => r.key, datas);
+    const g = R.groupBy((r) => r.key, getPastWeek(datas));
     const p = R.sort(
       (a, b) => new Date(b).getTime() - new Date(a).getTime(),
       R.keys(g)
