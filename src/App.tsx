@@ -22,7 +22,6 @@ import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import useSubscribeScroll from "./hooks/ui/use-subscribe-scroll";
 
 // filter array of request by createdAt property and return past week
 const getPastWeek = (requests: Request[]) =>
@@ -61,8 +60,7 @@ const compareDesc = (a: Request, b: Request) =>
   new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 
 const Main = () => {
-  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useRequests();
+  const { data, isLoading } = useRequests();
 
   const l = useMemo(() => {
     if (!data) return [];
@@ -78,29 +76,6 @@ const Main = () => {
     );
     return p.map((k) => ({ key: k, data: g[k] }));
   }, [data]);
-
-  const handleScroll = () => {
-    const canFetch = !isFetchingNextPage && hasNextPage;
-    const bottom =
-      Math.ceil(window.innerHeight + window.scrollY) >=
-      document.documentElement.scrollHeight;
-    if (bottom && canFetch) {
-      fetchNextPage().catch(console.error);
-    }
-  };
-
-  useEffect(() => {
-    if (
-      document.body.clientHeight <= window.innerHeight &&
-      !isLoading &&
-      !isFetchingNextPage &&
-      hasNextPage
-    ) {
-      fetchNextPage().catch(console.error);
-    }
-  }, [data, isLoading, isFetchingNextPage, hasNextPage]);
-
-  useSubscribeScroll(handleScroll);
 
   const [inputKey, setInputKey] = useState("");
   const [key, setKey] = useState<string>();
