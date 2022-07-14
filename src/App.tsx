@@ -22,6 +22,7 @@ import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import useSubscribeScroll from "./hooks/ui/use-subscribe-scroll";
 
 const MySnackbar = () => {
   const { showing } = useStore((state) => ({
@@ -72,7 +73,7 @@ const Main = () => {
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
     if (bottom && canFetch) {
-      fetchNextPage();
+      fetchNextPage().catch(console.error);
     }
   };
 
@@ -83,18 +84,11 @@ const Main = () => {
       !isFetchingNextPage &&
       hasNextPage
     ) {
-      fetchNextPage();
+      fetchNextPage().catch(console.error);
     }
   }, [data, isLoading, isFetchingNextPage, hasNextPage]);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [handleScroll]);
+  useSubscribeScroll(handleScroll);
 
   const [inputKey, setInputKey] = useState("");
   const [key, setKey] = useState<string>();
@@ -143,7 +137,7 @@ const Main = () => {
       <MySnackbar />
       <Dialog open={key === undefined || key.length === 0}>
         <DialogTitle>密碼</DialogTitle>
-        <DialogContent sx={{ minWidth: "24vw" }}>
+        <DialogContent sx={{ minWidth: 300 }}>
           <TextField
             type={"password"}
             value={inputKey}
@@ -158,7 +152,7 @@ const Main = () => {
             disabled={inputKey.length === 0}
             onClick={() => {
               localStorage.setItem("api-key", inputKey);
-              window.location.reload();
+              setKey(inputKey);
             }}
           >
             確認
